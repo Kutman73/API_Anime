@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 
 
-class SearchFiles:
+class FileSearcher:
     @staticmethod
     def get_local_files(path: str) -> list:
         file_list = []
@@ -32,7 +32,7 @@ class SearchFiles:
             return file
 
 
-class FileCheck:
+class FileValidator:
     @staticmethod
     def check_local_file_exist(path: str) -> bool | str:
         if os.path.isfile(path):
@@ -46,7 +46,7 @@ class FileCheck:
             raise ValidationError(f"Max size file {byte_limit}MB")
 
 
-class FileModify:
+class FileModifier:
     @staticmethod
     def get_video_quality(instance, unique_id: int, fieldname: str) -> str:
         video_file = getattr(instance, fieldname)
@@ -78,14 +78,14 @@ class FileModify:
         return f"{hashed_name_of_the_anime}"
 
 
-class FilePath:
+class FilePathGenerator:
     @staticmethod
     def get_path_to_cover_anime(instance, filename) -> str:
         format_file = os.path.splitext(filename)[1].lower()
         path_to_cover_anime = f"{instance.slug}/cover/"
-        hashed_filename = FileModify.get_filename_hash(instance, 'cover')
+        hashed_filename = FileModifier.get_filename_hash(instance, 'cover')
         path = os.path.join(path_to_cover_anime, hashed_filename)
-        end_path = FileCheck.check_local_file_exist(path + format_file)
+        end_path = FileValidator.check_local_file_exist(path + format_file)
         if end_path:
             return end_path
         return ''
@@ -94,13 +94,13 @@ class FilePath:
     def get_path_to_movie(instance, filename) -> str:
         format_file = os.path.splitext(filename)[1].lower()
         path_to_movie = f"{instance.anime.slug}/movie/"
-        hashed_filename = FileModify.get_filename_hash(
+        hashed_filename = FileModifier.get_filename_hash(
             instance, 'video'
         )
-        video_quality = FileModify.get_video_quality(
+        video_quality = FileModifier.get_video_quality(
             instance, instance.movie_number, 'video'
         )
-        end_path = FileCheck.check_local_file_exist(
+        end_path = FileValidator.check_local_file_exist(
             os.path.join(
                 path_to_movie, video_quality + hashed_filename + format_file
             )
@@ -114,11 +114,11 @@ class FilePath:
         format_file = os.path.splitext(filename)[1].lower()
         path_to_episode = f"{instance.season.anime.slug}" \
                           f"/season-{instance.season.season_number}/episodes"
-        hashed_filename = FileModify.get_filename_hash(instance, 'video')
-        video_quality = FileModify.get_video_quality(
+        hashed_filename = FileModifier.get_filename_hash(instance, 'video')
+        video_quality = FileModifier.get_video_quality(
             instance, instance.episode_number, 'video'
         )
-        check_file = FileCheck.check_local_file_exist(
+        check_file = FileValidator.check_local_file_exist(
             os.path.join(
                 path_to_episode, video_quality + hashed_filename + format_file
             )
