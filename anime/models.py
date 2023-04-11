@@ -1,4 +1,8 @@
-from anime.services.file_utils import OverWriteStorage, FilePath, FileCheck
+from anime.services.file_utils import (
+    OverWriteStorage,
+    FilePathGenerator,
+    FileValidator
+)
 from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
@@ -59,8 +63,8 @@ class Anime(models.Model):
     cover = models.ImageField(
         storage=OverWriteStorage(),
         validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg']),
-                    FileCheck.check_file_size],
-        upload_to=FilePath.get_path_to_cover_anime,
+                    FileValidator.check_file_size],
+        upload_to=FilePathGenerator.get_path_to_cover_anime,
         max_length=255
     )
     description = models.TextField()
@@ -135,9 +139,7 @@ class AnimeEpisode(models.Model):
     video = models.FileField(
         storage=OverWriteStorage(),
         validators=[FileExtensionValidator(allowed_extensions=['mp4'])],
-        upload_to=FilePath.get_path_to_episode,
-        null=False,
-        blank=False,
+        upload_to=FilePathGenerator.get_path_to_episode,
         max_length=255
     )
     duration = models.DurationField()
@@ -165,7 +167,7 @@ class AnimeMovie(models.Model):
     video = models.FileField(
         storage=OverWriteStorage(),
         validators=[FileExtensionValidator(allowed_extensions=['mp4'])],
-        upload_to=FilePath.get_path_to_movie,
+        upload_to=FilePathGenerator.get_path_to_movie,
         max_length=255
         )
     duration = models.DurationField()
@@ -208,4 +210,4 @@ class Review(models.Model):
     number = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
-        return self.comment
+        return f'{self.author}_{self.anime}'
