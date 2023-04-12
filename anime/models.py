@@ -144,7 +144,6 @@ class AnimeEpisode(models.Model):
     voice_acting = models.ForeignKey(VoiceActing,
                                      on_delete=models.CASCADE)
     episode_number = models.PositiveIntegerField()
-    release_date = models.DateField()
     updating_at = models.DateField(auto_now=True)
     creating_at = models.DateField(auto_now_add=True)
     number = models.PositiveSmallIntegerField(default=1)

@@ -187,7 +187,6 @@ class EpisodeValidateSerializer(AuthorValidateSerializer):
     duration = serializers.DurationField()
     voice_acting = serializers.IntegerField(min_value=1)
     episode_number = serializers.IntegerField(min_value=1)
-    release_date = serializers.DateField()
 
     @staticmethod
     def validate_voice_acting(voice_acting):

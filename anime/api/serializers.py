@@ -112,7 +112,6 @@ class EpisodeSerializers(ModelSerializer):
             'duration',
             'voice_acting',
             'episode_number',
-            'release_date',
         )
 
 
