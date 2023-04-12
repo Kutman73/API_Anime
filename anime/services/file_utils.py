@@ -33,17 +33,18 @@ class FileSearcher:
 
 
 class FileValidator:
+    def __init__(self, byte_limit: int):
+        self.byte_limit = byte_limit
+
     @staticmethod
     def check_local_file_exist(path: str) -> bool | str:
         if os.path.isfile(path):
             return False
         return path
 
-    @staticmethod
-    def check_file_size(file) -> ValidationError or None:
-        byte_limit = 3
-        if file.size > byte_limit * 1024 * 1024:
-            raise ValidationError(f"Max size file {byte_limit}MB")
+    def check_file_size(self, file) -> ValidationError or None:
+        if file.size > self.byte_limit * 1024 * 1024:
+            raise ValidationError(f"Max size file {self.byte_limit}MB")
 
 
 class FileModifier:
@@ -82,7 +83,7 @@ class FilePathGenerator:
     @staticmethod
     def get_path_to_cover_anime(instance, filename) -> str:
         format_file = os.path.splitext(filename)[1].lower()
-        path_to_cover_anime = f"{instance.slug}/cover/"
+        path_to_cover_anime = "cover/"
         hashed_filename = FileModifier.get_filename_hash(instance, 'cover')
         path = os.path.join(path_to_cover_anime, hashed_filename)
         end_path = FileValidator.check_local_file_exist(path + format_file)
@@ -93,7 +94,7 @@ class FilePathGenerator:
     @staticmethod
     def get_path_to_movie(instance, filename) -> str:
         format_file = os.path.splitext(filename)[1].lower()
-        path_to_movie = f"{instance.anime.slug}/movie/"
+        path_to_movie = "anime_movie/"
         hashed_filename = FileModifier.get_filename_hash(
             instance, 'video'
         )
@@ -112,8 +113,7 @@ class FilePathGenerator:
     @staticmethod
     def get_path_to_episode(instance, filename) -> str:
         format_file = os.path.splitext(filename)[1].lower()
-        path_to_episode = f"{instance.season.anime.slug}" \
-                          f"/season-{instance.season.season_number}/episodes"
+        path_to_episode = "anime_episodes/"
         hashed_filename = FileModifier.get_filename_hash(instance, 'video')
         video_quality = FileModifier.get_video_quality(
             instance, instance.episode_number, 'video'
