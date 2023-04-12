@@ -1,5 +1,6 @@
 from pathlib import Path
 from dynaconf import Dynaconf
+from anime.services.file_utils import FileValidator
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -102,3 +103,6 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+IMAGE_LIMIT = FileValidator(byte_limit=3)
+VIDEO_LIMIT = FileValidator(byte_limit=5120)
