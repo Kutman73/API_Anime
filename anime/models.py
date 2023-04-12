@@ -171,7 +171,6 @@ class AnimeMovie(models.Model):
     duration = models.DurationField()
     producer = models.ManyToManyField(Producer)
     movie_number = models.PositiveIntegerField()
-    release_date = models.DateField()
     creating_at = models.DateField(auto_now_add=True)
     number = models.PositiveSmallIntegerField(default=1)
 

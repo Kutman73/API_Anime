@@ -246,7 +246,6 @@ class MovieValidateSerializer(AuthorValidateSerializer):
         child=serializers.IntegerField(min_value=1)
     )
     movie_number = serializers.IntegerField(min_value=1)
-    release_date = serializers.DateField()
 
     @staticmethod
     def validate_voice_acting(voice_acting):

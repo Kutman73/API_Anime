@@ -128,7 +128,6 @@ class MovieSerializers(ModelSerializer):
             'producer',
             'movie_number',
             'duration',
-            'release_date',
         )
 
 
