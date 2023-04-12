@@ -1,12 +1,9 @@
-from anime.services.file_utils import (
-    OverWriteStorage,
-    FilePathGenerator,
-    FileValidator
-)
+from anime.services.file_utils import OverWriteStorage, FilePathGenerator
 from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
+from api_anime.settings import IMAGE_LIMIT, VIDEO_LIMIT
 
 
 class Genre(models.Model):
@@ -59,11 +56,11 @@ class Anime(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, max_length=50)
+    slug = models.SlugField(unique=True, max_length=20)
     cover = models.ImageField(
         storage=OverWriteStorage(),
         validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg']),
-                    FileValidator.check_file_size],
+                    IMAGE_LIMIT.check_file_size],
         upload_to=FilePathGenerator.get_path_to_cover_anime,
         max_length=255
     )
@@ -138,7 +135,8 @@ class AnimeEpisode(models.Model):
                                related_name='episode_season')
     video = models.FileField(
         storage=OverWriteStorage(),
-        validators=[FileExtensionValidator(allowed_extensions=['mp4'])],
+        validators=[FileExtensionValidator(allowed_extensions=['mp4']),
+                    VIDEO_LIMIT.check_file_size],
         upload_to=FilePathGenerator.get_path_to_episode,
         max_length=255
     )
@@ -166,7 +164,8 @@ class AnimeMovie(models.Model):
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
     video = models.FileField(
         storage=OverWriteStorage(),
-        validators=[FileExtensionValidator(allowed_extensions=['mp4'])],
+        validators=[FileExtensionValidator(allowed_extensions=['mp4']),
+                    VIDEO_LIMIT.check_file_size],
         upload_to=FilePathGenerator.get_path_to_movie,
         max_length=255
         )
