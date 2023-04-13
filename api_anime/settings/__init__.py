@@ -2,7 +2,7 @@ from pathlib import Path
 from dynaconf import Dynaconf
 from anime.services.file_utils import FileValidator
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 secrets_data = Dynaconf(
     environments=False,
@@ -13,7 +13,7 @@ SECRET_KEY = secrets_data.get('SECRET_KEY')
 
 DEBUG = True if secrets_data.get('DEBUG') == '1' else False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 INSTALLED_APPS = [
@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'anime',
 ]
 
 REST_FRAMEWORK = {
@@ -33,7 +32,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 12,
 }
 

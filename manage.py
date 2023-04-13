@@ -1,11 +1,19 @@
 #!/usr/bin/env python
 import os
 import sys
+from api_anime import settings
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api_anime.settings')
+    if settings.DEBUG:
+        os.environ.setdefault(
+            'DJANGO_SETTINGS_MODULE', 'api_anime.settings.dev'
+        )
+    else:
+        os.environ.setdefault(
+            'DJANGO_SETTINGS_MODULE', 'api_anime.settings.prod'
+        )
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
