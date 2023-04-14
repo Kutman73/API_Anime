@@ -5,6 +5,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 CREATED_APPS = [
     'anime',
+    'users',
 ]
 
 INSTALLED_APPS += CREATED_APPS
@@ -19,5 +20,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 12,
     'DEFAULT_PERMISSION_CLASSES': [
         'apps.anime.services.permissions.IsAdminOrReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
