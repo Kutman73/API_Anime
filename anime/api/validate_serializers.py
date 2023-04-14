@@ -80,7 +80,6 @@ class AnimeCreateSerializer(AnimeValidateSerializer):
 
 
 class AnimeUpdateSerializer(AnimeValidateSerializer):
-    @staticmethod
     def validate_title(self, title):
         if Anime.objects.filter(
                 title=title
@@ -88,25 +87,12 @@ class AnimeUpdateSerializer(AnimeValidateSerializer):
             raise ValidationError('Title must be unique')
         return title
 
-    @staticmethod
     def validate_slug(self, slug):
         if Anime.objects.filter(slug=slug).exclude(
                 id=self.context.get('id')
         ).count() > 0:
             raise ValidationError('Original anime name must be unique')
         return slug
-
-    @staticmethod
-    def validate_cover(self, cover):
-        anime = Anime.objects.get(id=self.context.get('id'))
-        try:
-            file_path = anime.cover.path
-        except ValueError:
-            return cover
-        cover = FileSearcher.get_file_exist(
-            cover, anime, file_path
-        )
-        return cover
 
 
 class SeasonValidateSerializer(AuthorValidateSerializer):
@@ -160,7 +146,6 @@ class SeasonCreateSerializer(SeasonValidateSerializer):
 
 
 class SeasonUpdateSerializer(SeasonValidateSerializer):
-    @staticmethod
     def validate_season_title(self, title):
         if AnimeSeason.objects.filter(
                 season_title=title).exclude(
@@ -169,7 +154,6 @@ class SeasonUpdateSerializer(SeasonValidateSerializer):
             raise ValidationError('Season title must be unique')
         return title
 
-    @staticmethod
     def validate_season_number(self, season_number):
         if AnimeSeason.objects.filter(
                 anime_season__anime__number=season_number).exclude(
@@ -222,17 +206,6 @@ class EpisodeUpdateSerializer(EpisodeValidateSerializer):
             raise ValidationError('Title movie must be unique')
         return title
 
-    def validate_video(self, video):
-        episode = AnimeEpisode.objects.get(id=self.context.get("id"))
-        try:
-            file_path = episode.video.path
-        except ValueError:
-            return video
-        video = FileSearcher.get_file_exist(
-            video, episode, file_path
-        )
-        return video
-
 
 class MovieValidateSerializer(AuthorValidateSerializer):
     title = serializers.CharField(max_length=255)
@@ -280,7 +253,6 @@ class MovieCreateSerializer(MovieValidateSerializer):
 
 
 class MovieUpdateSerializer(MovieValidateSerializer):
-    @staticmethod
     def validate_title(self, title):
         if AnimeMovie.objects.filter(
                 title_movie=title).exclude(
@@ -288,17 +260,6 @@ class MovieUpdateSerializer(MovieValidateSerializer):
         ).count() > 0:
             raise ValidationError('Title movie must be unique')
         return title
-
-    def validate_video(self, video):
-        movie = AnimeMovie.objects.get(id=self.context.get("id"))
-        try:
-            file_path = movie.video.path
-        except ValueError:
-            return video
-        video = FileSearcher.get_file_exist(
-            video, movie, file_path
-        )
-        return video
 
 
 class ReviewValidateSerializer(AuthorValidateSerializer):
