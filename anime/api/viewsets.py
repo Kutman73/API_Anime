@@ -15,6 +15,7 @@ from .serializers import (
 )
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.decorators import action
 from .validate_serializers import (
     AnimeCreateSerializer,
@@ -32,7 +33,22 @@ from .validate_serializers import (
 class AnimeModelViewSet(ModelViewSet):
     queryset = Anime.objects.all()
     serializer_class = AnimeSerializers
+    filter_backends = [SearchFilter, OrderingFilter]
     lookup_field = 'slug'
+    search_fields = ['title']
+    ordering_fields = ['release_date', 'creating_at', 'updating_at']
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        genre_ids = self.request.query_params.get('genre')
+        theme_ids = self.request.query_params.get('theme')
+        if genre_ids:
+            genre_ids = [int(genre_id) for genre_id in genre_ids.split(',')]
+            queryset = queryset.filter(genre__id__in=genre_ids)
+        elif theme_ids:
+            theme_ids = [int(theme_id) for theme_id in theme_ids.split(',')]
+            queryset = queryset.filter(theme__id__in=theme_ids)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         serializer = AnimeCreateSerializer(data=request.data)
