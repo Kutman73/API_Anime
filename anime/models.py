@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
-from api_anime.settings import IMAGE_LIMIT, VIDEO_LIMIT
+from api_anime.settings.base import IMAGE_LIMIT, VIDEO_LIMIT
 
 
 class Genre(models.Model):

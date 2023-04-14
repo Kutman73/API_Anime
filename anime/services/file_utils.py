@@ -1,16 +1,17 @@
-from api_anime import settings
+from api_anime.settings import base
 import hashlib
 import os
 import pymediainfo
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
+from .validators import FileValidator
 
 
 class FileSearcher:
     @staticmethod
     def get_local_files(path: str) -> list:
         file_list = []
-        prefix_length = len(str(settings.MEDIA_ROOT))
+        prefix_length = len(str(base.MEDIA_ROOT))
         project_url = "http://127.0.0.1:8000/media"
         for file in os.scandir(path):
             if file.is_file():
@@ -30,21 +31,6 @@ class FileSearcher:
                                       ' Download the file again.')
         else:
             return file
-
-
-class FileValidator:
-    def __init__(self, byte_limit: int):
-        self.byte_limit = byte_limit
-
-    @staticmethod
-    def check_local_file_exist(path: str) -> bool | str:
-        if os.path.isfile(path):
-            return False
-        return path
-
-    def check_file_size(self, file) -> ValidationError or None:
-        if file.size > self.byte_limit * 1024 * 1024:
-            raise ValidationError(f"Max size file {self.byte_limit}MB")
 
 
 class FileModifier:

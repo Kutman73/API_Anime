@@ -1,4 +1,4 @@
-from api_anime.settings import *
+from api_anime.settings.base import *
 
 
 DEBUG = False
